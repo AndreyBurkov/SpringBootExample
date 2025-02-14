@@ -1,22 +1,41 @@
 package com.example.eployees;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.Period;
+
+@Entity
+@Table(name="employee")
 public class Employee {
 
+    public Employee() {
+    }
+
+    @Id
+    @SequenceGenerator(
+            name = "employee_sequence",
+            sequenceName = "employee_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "employee_sequence"
+    )
     private Long id;
     private String name;
     private String email;
     private LocalDate birthDate;
+    @Transient
     private Integer age;
     private Integer salary;
 
-    public Employee(Long id, String name, String email, LocalDate birthDate, Integer age, Integer salary) {
+    public Employee(Long id, String name, String email, LocalDate birthDate, Integer salary) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.birthDate = birthDate;
-        this.age = age;
+        this.age = Period.between(birthDate, LocalDate.now()).getYears();
         this.salary = salary;
     }
 
@@ -24,23 +43,51 @@ public class Employee {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
     public Integer getAge() {
+        if (age == null) {
+            age = Period.between(birthDate, LocalDate.now()).getYears();
+        }
         return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public Integer getSalary() {
         return salary;
     }
+
+    public void setSalary(Integer salary) {
+        this.salary = salary;
+    }
+
 }
